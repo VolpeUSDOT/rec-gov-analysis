@@ -1,0 +1,24 @@
+--find way to pull fields from csv, maybe using python??
+--sqlcmd -S CLAYMANB41301\SQLEXPRESS -i C:\Work\2016_01_14_Brazil_Data\SQL\Basic_Select_All_Years.sql -o output if needed
+CREATE TABLE Facilities
+(
+ FACILITYADAACCESS varchar(1024) NULL,
+ FACILITYEMAIL varchar(60) NULL,
+ FACILITYID INTEGER NULL,
+ FACILITYLATITUDE numeric(10,6) NULL,
+ FACILITYLONGITUDE numeric(10,6) NULL,
+ FACILITYMAPURL varchar(256) NULL,
+ FACILITYNAME varchar(256) NULL,
+ FACILITYPHONE varchar (256) NULL,
+ FACILITYRESERVATIONURL varchar(256) NULL,
+ FACILITYTYPEDESCRIPTION varchar(1024) NULL,
+ FACILITYUSEFEEDESCRIPTION varchar(1024) NULL,
+ KEYWORDS varchar(4000) NULL,
+ LASTUPDATEDDATE varchar(20) NULL,
+ LEGACYFACILITYID varchar(20) NULL,
+ ORGFACILITYID INTEGER NULL,
+ STAYLIMIT varchar(500) NULL
+);
+
+.mode csv ,
+.import Data/Facilities_API_v1_edited_LN.csv Facilities

@@ -1,0 +1,50 @@
+use temp
+go
+
+
+--CREATE database GTFS;
+
+--use GTFS
+--go
+
+--find way to pull fields from csv, maybe using python??
+--sqlcmd -S CLAYMANB41301\SQLEXPRESS -i C:\Work\2016_01_14_Brazil_Data\SQL\Basic_Select_All_Years.sql -o output if needed
+create table RIDB_FULL
+(
+ID VARCHAR(100), 
+AGENCY VARCHAR(100),
+PARK VARCHAR(100),
+SITE_TYPE VARCHAR(100),
+FAC_ZIP VARCHAR(10),
+CUST_ZIP VARCHAR(10),
+CUST_STATE VARCHAR(10),
+CUST_COUNTRY VARCHAR(50), 
+STARTING_DATE VARCHAR(10),
+END_DATE VARCHAR(10),
+ORDER_DATE VARCHAR(10),
+NUM_PEOPLE VARCHAR(20),
+LEAD_TIME VARCHAR(20),
+DURATION VARCHAR(20),
+PARK_LAT VARCHAR(20),
+PARK_LON VARCHAR(20),
+CUST_LAT VARCHAR(20),
+CUST_LON VARCHAR(20),
+TRAVEL_DIST VARCHAR(100)
+)
+
+
+
+BULK
+INSERT FacilityAddresses
+FROM 'C:\Tasks\2016\2016_05_31_RIDB\Data\FacilityAddresses_API_v1.csv' --location with filename
+WITH
+(
+FIRSTROW = 2,
+FIELDTERMINATOR = ',',
+ROWTERMINATOR = '\n'
+)
+GO
+
+alter table facilityaddresses alter column ADDRESSCOUNTRYCODE varchar(20)
+
+UPDATE facilityaddresses SET POSTALCODE = REPLACE(POSTALCODE,'"','')
