@@ -1,7 +1,9 @@
-# Project-specific ignores
+# Project-specific ignores https://www.atlassian.com/git/tutorials/gitignore 
 /Data
 /Install
 /sqlite3.exe
+/output
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

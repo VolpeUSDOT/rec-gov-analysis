@@ -6,8 +6,12 @@ import sqlite3
 
 sqlite_file="test.db"
 
-OUTDIR = r'D:\tasks\2017\2017_03_23_ridb\output'
+# Set path for output based on relative path and location of script
+FileDir = os.path.dirname(__file__)
+print FileDir
+OUTDIR = os.path.join(FileDir, 'output')
 
+# Set IDs of objects for output
 FACILITYIDS = ['233396','233262']#['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
 # FACILITYID = ['232171','232173']
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
