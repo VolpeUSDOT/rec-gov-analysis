@@ -4,7 +4,7 @@ import os, csv#, pyodbc
 import xlwt, xlrd
 import sqlite3
 
-sqlite_file="test.db"
+sqlite_file="reservations.db"
 
 # Set path for output based on relative path and location of script
 FileDir = os.path.dirname(__file__)
@@ -12,7 +12,7 @@ print FileDir
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
-FACILITYIDS = ['232336','233262']#['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
+FACILITYIDS = ['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEAR_TABLE = "Recreation_2015"
 
