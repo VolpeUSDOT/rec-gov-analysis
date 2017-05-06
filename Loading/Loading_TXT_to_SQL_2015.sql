@@ -57,6 +57,3 @@ create table Recreation_2015
  [SmallTent]varchar(50) NULL,
  [Marinaboat]varchar(50) NULL
 );
-
-.mode csv ,
-.import Data/Reservation/2015.csv Recreation_2015

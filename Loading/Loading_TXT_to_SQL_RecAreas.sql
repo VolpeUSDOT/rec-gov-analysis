@@ -12,6 +12,3 @@ CREATE TABLE RecAreas(
   "RECAREARESERVATIONURL" varchar(1024) NULL,
   "STAYLIMIT" varchar(1024) NULL
 );
-
-.mode csv ,
-.import Data/RecAreas_API_v1_edited.csv RecAreas

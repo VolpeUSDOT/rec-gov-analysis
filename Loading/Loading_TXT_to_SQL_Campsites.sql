@@ -9,6 +9,3 @@ CREATE TABLE Campsites(
   "LOOP" varchar(1024) NULL,
   "TYPEOFUSE" varchar(1024) NULL
 );
-
-.mode csv ,
-.import Data/Campsites_API_v1_edited.csv Campsites

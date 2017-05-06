@@ -19,6 +19,3 @@ CREATE TABLE Facilities
  ORGFACILITYID INTEGER NULL,
  STAYLIMIT varchar(500) NULL
 );
-
-.mode csv ,
-.import Data/Facilities_API_v1_edited_LN.csv Facilities
