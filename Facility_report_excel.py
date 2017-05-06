@@ -12,7 +12,7 @@ print FileDir
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
-FACILITYIDS = ['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
+FACILITYIDS = ['233260'] #['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEAR_TABLE = "Recreation_2015"
 
@@ -311,9 +311,21 @@ for facid in FACILITYIDS:
 					else: 
 						fac_date_counter[day_m] += 1
 			
-			elif start != None and end == None:
-			
-				day_m = str(start)[-5:]
+			# Handles reservations with only a start-date. Typical for one-day events such as tours, but not typical for campgrounds. 
+			elif start != None and start != '' and (end == None or end == ''):
+				
+				# Seperate out year, month, and day
+				start_year_as_int = int(start[:4])
+				start_month_as_int = int(start[5:-3])
+				start_day_as_int = int(start[-2:])
+				
+				# Input into common time format
+				start_date = datetime.datetime(start_year_as_int, start_month_as_int, start_day_as_int)
+				
+				# Convert date/time format to just date
+				start_date = start_date.date()
+				
+				day_m = str(start_date)[-5:]
 			
 				if not day_m in fac_date_counter:
 					fac_date_counter[day_m] = 1
