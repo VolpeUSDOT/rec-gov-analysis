@@ -1,3 +1,5 @@
-1. Edit loading scripts to point to CSV data with headers removed (hoping to streamline this process into one python script at some point)
-2. Use SQLite to reate a .db file and run loading scripts. For example: .read Loading/Loading_TXT_to_SQL_Facilities.sql
-3. Set paramters on Facility_report_excel.py and run
+1. Ensure you have Sqlite3 installed and available to your python scripts. 
+2. Download RIDB and Recreation.gov reservations csv files from https://ridb.recreation.gov/?action=datadownload and place into a "Data" folder alongside repo code.
+	TO DO: Make Python scripts work with vanilla, straight from recreation.gov version of RIDB tables, specifically Facilities and RecAreas. 
+3. Run loading.py to create the SQLite database from the downloaded data files. 
+4. Set paramters on Facility_report_excel.py and run
