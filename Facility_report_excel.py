@@ -338,7 +338,7 @@ for facid in FACILITYIDS:
 				
 	i = 1
 
-	for k,v in fac_date_counter.iteritems():
+	for k,v in fac_date_counter.items():
 		fac_agg.write(i, 0, k)
 		fac_agg.write(i, 1, v)
 		
