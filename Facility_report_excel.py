@@ -8,7 +8,7 @@ sqlite_file="reservations.db"
 
 # Set path for output based on relative path and location of script
 FileDir = os.path.dirname(__file__)
-print FileDir
+print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
@@ -73,12 +73,12 @@ date_query = '''select FacilityID, StartDate, EndDate from Recreation____YEAR___
 # create new sheet fac_basic for each facility in facid add run query and create new line
 for facid in FACILITYIDS:
 
-	print datetime.datetime.now().time()
+	print (datetime.datetime.now().time())
 	
 	new_file = os.path.join(new_folder, facid + '.xls')
 	wb = xlwt.Workbook()
 	
-	print "running basic facility information {}".format(facid)
+	print ("running basic facility information {}".format(facid))
 
 	fac_basic = wb.add_sheet('Facility_Basic')
 
@@ -181,7 +181,7 @@ for facid in FACILITYIDS:
 		
 		
 	# Growth
-	print "year by year growth"
+	print ("year by year growth")
 	fac_growth = wb.add_sheet("Growth")
 		
 	fac_growth.write(0,0,"Year")
@@ -228,7 +228,7 @@ for facid in FACILITYIDS:
 	wb.save(new_file)
 		
 	#calendar dates    
-	print "reservations by date"
+	print ("reservations by date")
 	fac_agg = wb.add_sheet("Date Analysis")
 
 	fac_agg.write(0,0,"Date")
@@ -346,7 +346,7 @@ for facid in FACILITYIDS:
 
 		
 	wb.save(new_file)
-print "finish {}".format(datetime.datetime.now().time())
+print ("finish {}".format(datetime.datetime.now().time()))
 
 
 
