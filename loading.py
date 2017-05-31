@@ -76,7 +76,7 @@ def addTable(tableName,loadPath,dataPath,colNames,cursor,conn):
 	try: 
 		cursor.executescript(qry)
 	except:
-		print tableName + ' already present'
+		print (tableName + ' already present')
 		return
 
 	# Prepare load query
@@ -101,6 +101,6 @@ def addTable(tableName,loadPath,dataPath,colNames,cursor,conn):
 			cursor.execute(loadQry, to_db)
 
 	conn.commit()
-	print tableName + ' loaded'
+	print (tableName + ' loaded')
 	
 main()
