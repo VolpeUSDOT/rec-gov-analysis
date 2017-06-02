@@ -13,7 +13,7 @@ print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
-FACILITYIDS = ['232250'] #['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
+FACILITYIDS = ['233262'] #['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEAR_TABLE = "Recreation_2015"
 
@@ -366,11 +366,20 @@ for facid in FACILITYIDS:
     target_fac = target_fac.reset_index()
     
     #Item 1: In-state/out-of-state/intl distinction
+    print ("Customer Origin Analysis")
+    #Count Countries where reservations come from and convert to dataframe
+    country_count = target_fac['CustomerCountry'].value_counts().to_frame().reset_index()
     
-    #Count Countries where reservations come from
-    country_count = target_fac['CustomerCountry'].value_counts()
-    
-    
+    #Setup sheet where this and the other relevant info will go
+    custloc_sheet = wb.add_sheet("Customer Location Breakdown")
+    #custloc_sheet.write()
+    custloc_sheet.write(0,0,"Reservation Breakdown by Country")
+    custloc_sheet.write(1,0,"Country")
+    custloc_sheet.write(1,1,"# of Reservations")
+    for index, row in country_count.iterrows():
+        custloc_sheet.write(int(index)+2,0,row['index'])
+        custloc_sheet.write(int(index)+2,1,row['CustomerCountry'])
+   
     #In State/Out of State/Out of Country distinction
     
     #Total site reservaations calcualtion
@@ -387,6 +396,24 @@ for facid in FACILITYIDS:
     ##Total Reservations-(instate_res+outcountrye_res)=out of state residents
     outstate_res = total_res-(instate_res+outcountry_res)
     
+    # Write this results to Customer Location Breakdown Sheet
+    custloc_sheet.write(0,4,"Reservation Breakdown by State")
+    custloc_sheet.write(1,4,"Category")
+    custloc_sheet.write(1,5,"# of Reservations")
+    custloc_sheet.write(2,4,"Same State as Site")
+    custloc_sheet.write(2,5,instate_res)
+    custloc_sheet.write(3,4,"Out of State")
+    custloc_sheet.write(3,5,outstate_res)
+    custloc_sheet.write(4,4,"Outside USA")
+    custloc_sheet.write(4,5,outcountry_res)
+    custloc_sheet.write(5,4,"Total Reservations")
+    custloc_sheet.write(5,5,total_res)
+    
+    
+    
+    
+    
+    
     #############################################################
     #Item 3 Zip code local/non-local distinction Note: Some Facilities do not have Zip
     
@@ -394,16 +421,31 @@ for facid in FACILITYIDS:
     local_res_lev1 = len(target_fac.loc[target_fac['CustomerZIP']==target_fac['FacilityZIP']])
     #Level 2: Reservations have same 3 digit level zip as facility
     #Pull facility ZipCode (just use first row data as this should remanin the same for the filtered sheet)
-    fac_zip = target_fac['FacilityZIP'].iloc[0][:3]
+    
+    #set level of zip code to check i.e zip_lvl=3 for 33027 would check against 330*
+    zip_lvl = 3
+    fac_zip = target_fac['FacilityZIP'].iloc[0][:zip_lvl]
     #create new columns with ZipCodes as strings to use regex with
     target_fac['CustomerZIP_Str']=target_fac['CustomerZIP']
     target_fac['CustomerZIP_Str']=target_fac['CustomerZIP_Str'].apply(str)
     #form 3 digit regex expression. if handles if there is no Zip
+    print ("Zip Codes Local/NonLocal Analysis")
+    
+    
     if fac_zip != '':
         fac_zip_regex=fac_zip+'*'
         local_res_lev2=len(target_fac['CustomerZIP'].filter(regex=fac_zip_regex))
+        #write out to Breakdown sheet if data exists
+        custloc_sheet.write(0,7,"Reservation Breakdown by Zip Code")
+        custloc_sheet.write(1,7,"Category")
+        custloc_sheet.write(1,8,"# of Reservations")
+        custloc_sheet.write(2,7,"Same Zip as Site")
+        custloc_sheet.write(2,8,local_res_lev1)
+        custloc_sheet.write(3,7,"Within same "+str(zip_lvl)+ " Digit Level as Site")
+        custloc_sheet.write(3,8,local_res_lev2)
+
     else:
-        print('No Facility Zip Code Provided')
+        print('No Facility Zip Code Available in Data Set')
     
     #############################################################
     #Item 1 - Add entity type to standard report
@@ -416,9 +458,11 @@ for facid in FACILITYIDS:
     print ("Entity Type")
     
     ent_sheet = wb.add_sheet("EntityType")
+    ent_sheet.write(0,0,'Entity Type')
+    ent_sheet.write(0,1,'# of Reservations')
     for index, row in entity_count.iterrows():
-        ent_sheet.write(0,int(index),row['index'])
-        ent_sheet.write(1,int(index),row['EntityType'])
+        ent_sheet.write(int(index)+1,0,row['index'])
+        ent_sheet.write(int(index)+1,1,row['EntityType'])
    
         
 
