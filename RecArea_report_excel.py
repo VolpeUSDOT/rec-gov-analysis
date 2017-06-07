@@ -43,9 +43,33 @@ if not os.path.exists(new_folder):
 for recarea in RecAreas:    
     #get facility IDs in rec area using Data/RecAreaFacilities_API_v1.csv
     FACILITYID_all = pd.read_csv('Data/RecAreaFacilities_API_v1.csv', encoding="ANSI")
-    FACILITYID_filtered = FACILITYID_all.loc[FACILITYID_all['RECAREAID']==int(recarea)]
+    FACILITYID_filtered = FACILITYID_all.loc[FACILITYID_all['RECAREAID']==int(recarea)].reset_index()
+    FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
     print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
     
+    #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
+    FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
+    FACILITYID_list = FACILITYID_list.replace(']',')',1)
+    
+    #setup SQL query
+    fac_target_query = '''
+    select *
+    from Recreation_2015
+    where FacilityID IN ___FACIDS___
+    '''
+    
+    temp_fac_target_query = fac_target_query.replace("___FACIDS___", str(FACILITYID_list))
+    #Make SQL query
+    print('Gathering Facilities associated with RecArea')
+    target_fac = pd.read_sql_query(temp_fac_target_query, recreation_cnxn)
+    target_fac = target_fac.reset_index()
+    
+    
+#Close db  connections
+recreation_cursor.close()
+recreation_cnxn.close()
+
+print ("finish {}".format(datetime.datetime.now().time()))
     
     
     
