@@ -443,6 +443,8 @@ for facid in FACILITYIDS:
         custloc_sheet.write(2,8,local_res_lev1)
         custloc_sheet.write(3,7,"Within same "+str(zip_lvl)+ " Digit Level as Site")
         custloc_sheet.write(3,8,local_res_lev2)
+        custloc_sheet.write(4,7,"Total Reservations")
+        custloc_sheet.write(4,8,total_res)
 
     else:
         print('No Facility Zip Code Available in Data Set')
@@ -468,6 +470,17 @@ for facid in FACILITYIDS:
 
     
     wb.save(new_file)
+    
+    
+    ##Test for Demo
+    fac_target_query2 = '''
+    select *
+    from Facilities
+    '''
+    #temp_fac_target_query2 = fac_target_query.replace("___FACID___", str(facid))
+    
+    target_fac2 = pd.read_sql_query(fac_target_query2, recreation_cnxn)
+    target_fac2 = target_fac2.reset_index()
     
     #End Pandas Implementation 
         
