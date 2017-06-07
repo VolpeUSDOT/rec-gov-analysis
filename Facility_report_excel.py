@@ -14,6 +14,7 @@ OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
 FACILITYIDS = ['233262'] #['233396','233262','233266','233260','232250','232769','233261','234735','232254','231980'] 
+#YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEAR_TABLE = "Recreation_2015"
 
@@ -472,15 +473,7 @@ for facid in FACILITYIDS:
     wb.save(new_file)
     
     
-    ##Test for Demo
-    fac_target_query2 = '''
-    select *
-    from Facilities
-    '''
-    #temp_fac_target_query2 = fac_target_query.replace("___FACID___", str(facid))
-    
-    target_fac2 = pd.read_sql_query(fac_target_query2, recreation_cnxn)
-    target_fac2 = target_fac2.reset_index()
+
     
     #End Pandas Implementation 
         
