@@ -3,3 +3,5 @@
 	TO DO: Make Python scripts work with vanilla, straight from recreation.gov version of RIDB tables, specifically Facilities and RecAreas. 
 3. Run loading.py to create the SQLite database from the downloaded data files. 
 4. Set paramters on Facility_report_excel.py and run
+
+Note: To add additional years Loading.py must be modified to add a new table based to the reservation csv file (e.g. "2015.csv", "2014.csv" etc). A loading path must also be added (e.g. "Loading_TXT_to_SQL_2014.sql)
