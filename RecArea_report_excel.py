@@ -45,6 +45,8 @@ for recarea in RecAreas:
     # These tasks (done using PANDAS) are setup to run at the recArea level
     #get facility IDs in rec area using Data/RecAreaFacilities_API_v1.csv
     
+    print (datetime.datetime.now().time())
+    
     RecArea_query='''
     select *
     from RecAreaFacilities
@@ -54,9 +56,9 @@ for recarea in RecAreas:
     
     
     
-    FACILITYID_all = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
+    FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
     
-    FACILITYID_filtered = FACILITYID_all.loc[FACILITYID_all['RECAREAID']==int(recarea)].reset_index()
+    
     FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
     print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
     
@@ -65,13 +67,26 @@ for recarea in RecAreas:
     FACILITYID_list = FACILITYID_list.replace(']',')',1)
     
     
+    #Pull Campsites that are in the list of facilities
+    print("Gathering Campsite Info")
+    #Setup SQL query
+    campsite_query='''
+    select *
+    from Campsites
+    where FACILITYID IN ___FACIDS___
+    '''
+    temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
     
+    #Run SQL query
+    Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
+    #Count sites
+    campsite_count = len(Campsites_RecArea)
     
+    print(str(campsite_count)+" Campsites Loaded")
     
     
     
     #setup SQL query
-    
     
     fac_target_query = '''
     select *
@@ -91,7 +106,7 @@ for recarea in RecAreas:
     #Run Analysis on collected facility data for RecArea
     
     #Start with pandas based sheets as those are easier to implement
-    print (datetime.datetime.now().time())
+   
     #Set up workbook
     new_file = os.path.join(new_folder, recarea + '.xls')
     wb = xlwt.Workbook()
@@ -122,7 +137,7 @@ for recarea in RecAreas:
     RecArea_all = pd.read_sql_query(temp_RecArea_basic_query,recreation_cnxn)
     
     
-    #RecArea_all = pd.read_csv('Data/RecAreas_API_v1.csv', encoding="ANSI")
+    
     RecArea_target = RecArea_all.loc[RecArea_all['RECAREAID']==int(recarea)]
     
     
@@ -140,6 +155,7 @@ for recarea in RecAreas:
     
     #Create placeholders for items that will be filled out later
     rec_basic.write(4,0,'Number Campsites')
+    rec_basic.write(4,1,campsite_count)
     rec_basic.write(5,0,'Average Stay')
     rec_basic.write(6,0,'Average Lead')
 #    
