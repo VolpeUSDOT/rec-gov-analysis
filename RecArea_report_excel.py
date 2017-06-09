@@ -22,7 +22,7 @@ print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['122'] #['10',17','25','122'] 
+RecAreas = ['25'] #['10',17','25','122'] 
 #YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 YEAR_TABLE = "Recreation_2015"
@@ -41,8 +41,21 @@ if not os.path.exists(new_folder):
     
 #loop through RecAreas if more than one
 for recarea in RecAreas:    
+    
+    # These tasks (done using PANDAS) are setup to run at the recArea level
     #get facility IDs in rec area using Data/RecAreaFacilities_API_v1.csv
-    FACILITYID_all = pd.read_csv('Data/RecAreaFacilities_API_v1.csv', encoding="ANSI")
+    
+    RecArea_query='''
+    select *
+    from RecAreaFacilities
+    where RECAREAID = ___RECIDS___
+    '''
+    temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
+    
+    
+    
+    FACILITYID_all = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
+    
     FACILITYID_filtered = FACILITYID_all.loc[FACILITYID_all['RECAREAID']==int(recarea)].reset_index()
     FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
     print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
@@ -51,7 +64,15 @@ for recarea in RecAreas:
     FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
     FACILITYID_list = FACILITYID_list.replace(']',')',1)
     
+    
+    
+    
+    
+    
+    
     #setup SQL query
+    
+    
     fac_target_query = '''
     select *
     from Recreation_2015
@@ -59,6 +80,9 @@ for recarea in RecAreas:
     '''
     
     temp_fac_target_query = fac_target_query.replace("___FACIDS___", str(FACILITYID_list))
+    # @TODO: here is what a year condition/replacement can be added for when that has to be implemented
+    #Just replace year/table name in the query string before running
+    
     #Make SQL query
     print('Gathering Facilities associated with RecArea')
     target_fac = pd.read_sql_query(temp_fac_target_query, recreation_cnxn)
@@ -71,6 +95,58 @@ for recarea in RecAreas:
     #Set up workbook
     new_file = os.path.join(new_folder, recarea + '.xls')
     wb = xlwt.Workbook()
+    
+    
+    
+    
+     #Create RecArea basic sheet
+   #RECAREANAME, RECAREAID, RECAREALATITUDE,RECAREALONGITUDE
+   #Calculate Total number of campsites, average stay, average lead, Reservations 2015
+   
+   #@TODO look into lat/long for all sites
+   
+   
+    print('Gathering RecArea Basic Information')
+    
+    #Setup SQL query
+    
+    RecArea_basic_query = '''
+    select *
+    from RecAreas
+    where RECAREAID =  ___RECIDS___
+    '''
+    
+    temp_RecArea_basic_query=RecArea_basic_query.replace("___RECIDS___", str(recarea))
+    
+    #Run SQL query
+    RecArea_all = pd.read_sql_query(temp_RecArea_basic_query,recreation_cnxn)
+    
+    
+    #RecArea_all = pd.read_csv('Data/RecAreas_API_v1.csv', encoding="ANSI")
+    RecArea_target = RecArea_all.loc[RecArea_all['RECAREAID']==int(recarea)]
+    
+    
+    
+    rec_basic = wb.add_sheet('Facility_Basic')
+
+    rec_basic.write(0,0,'RecAreaID')
+    rec_basic.write(0,1,str(RecArea_target['RECAREAID'].iloc[0]))
+    rec_basic.write(1,0,'RecAreaName')
+    rec_basic.write(1,1,RecArea_target['RECAREANAME'].iloc[0])
+    rec_basic.write(2,0,'RecAreaLatitude')
+    rec_basic.write(2,1,RecArea_target['RECAREALATITUDE'].iloc[0])
+    rec_basic.write(3,0,'RecAreaLongitude')
+    rec_basic.write(3,1,RecArea_target['RECAREALONGITUDE'].iloc[0])
+    
+    #Create placeholders for items that will be filled out later
+    rec_basic.write(4,0,'Number Campsites')
+    rec_basic.write(5,0,'Average Stay')
+    rec_basic.write(6,0,'Average Lead')
+#    
+#    test = RecArea_target['RECAREAID'].iloc[0]
+#    
+    wb.save(new_file)
+    
      
     
     #Item 1: In-state/out-of-state/intl distinction
@@ -172,12 +248,9 @@ for recarea in RecAreas:
     for index, row in entity_count.iterrows():
         ent_sheet.write(int(index)+1,0,row['index'])
         ent_sheet.write(int(index)+1,1,row['EntityType'])
-   
-        
-
-    
     wb.save(new_file)
     
+   
     
 #Close db  connections
 recreation_cursor.close()
