@@ -300,7 +300,6 @@ for recarea in RecAreas:
     i = 0
     for row in res_year.iterrows():
         date = row[0].strftime('%m-%d-%Y')
-        print (date)
         rec_dates.write(i+1,0,str(date))
         rec_dates.write(i+1,1,int(res_year.loc[row[0]]['Reservations']))
        
