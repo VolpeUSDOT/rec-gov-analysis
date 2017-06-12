@@ -266,8 +266,55 @@ for recarea in RecAreas:
         ent_sheet.write(int(index)+1,1,row['EntityType'])
     wb.save(new_file)
     
+    # Dates
+    #Create empty df from start to end date
+    
+    
+    # starting = "2015-01-01"
+    #ending = "2015-12-31"
+    
+    res_year = pd.DataFrame(0,columns=['Reservations'],index=pd.date_range('20150101','20151231',freq='D'))
+    
    
     
+    
+    #@TODO right now this only handles order date, but could be made more robust?
+    res_dates= pd.DataFrame(target_fac.groupby('OrderDate').size().rename('Reservations'))
+    res_dates['dates'] = pd.to_datetime(res_dates.index)
+    res_dates_indexed = res_dates.set_index(['dates'],inplace=True)
+    
+    #fill in res_dates with reservations made
+   
+    for row in res_dates.iterrows():
+        if row[0] in res_year.index:
+            res_year.loc[row[0]]['Reservations']=row[1]
+            
+            
+    #print out to excel sheet
+   
+    rec_dates = wb.add_sheet('Date Analysis')
+    rec_dates.write(0,0,'Date')
+    rec_dates.write(0,1,'# of Reservations')
+    
+   
+    i = 0
+    for row in res_year.iterrows():
+        rec_dates.write(i+1,0,str(row[0]))
+        rec_dates.write(i+1,1,int(res_year.loc[row[0]]['Reservations']))
+       
+       
+        #rec_dates.write(i+1,1,row[1]['Reservations'])
+        i=i+1
+        
+        
+    wb.save(new_file)
+
+        
+            
+          
+        
+   
+ 
 #Close db  connections
 recreation_cursor.close()
 recreation_cnxn.close()
