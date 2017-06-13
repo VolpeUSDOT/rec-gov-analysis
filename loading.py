@@ -119,7 +119,7 @@ def addTable(tableName,loadPath,dataPath,colNames,cursor,conn):
 #            print("Heres the test")
 #            print(row[names[1]])
             for i in range(0,len(colNames)): #iterate through colNames supplied in colNames for each Table
-#                print("cell level testing")
+#                print("cell level testing") #debugging
 #                print (i)
 #                print((row[names[i]]))
                 to_db.append(row[colNames[i]]) #Only columns in row that have a name specified in colNames
