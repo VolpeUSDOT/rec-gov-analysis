@@ -142,7 +142,7 @@ for recarea in RecAreas:
     
     
     
-    rec_basic = wb.add_sheet('Facility_Basic')
+    rec_basic = wb.add_sheet('RecArea_Basic')
 
     rec_basic.write(0,0,'RecAreaID')
     rec_basic.write(0,1,str(RecArea_target['RECAREAID'].iloc[0]))
