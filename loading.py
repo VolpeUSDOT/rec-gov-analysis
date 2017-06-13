@@ -20,7 +20,7 @@ def main():
     
     tableName = 'RecAreas'
     loadPath = 'Loading/Loading_TXT_to_SQL_RecAreas.sql'
-    dataPath = 'Data/RecAreas_API_v1_edited.csv'
+    dataPath = 'Data/RecAreas_API_v1.csv'
     colNames = ['KEYWORDS','LASTUPDATEDDATE','ORGRECAREAID','RECAREAEMAIL','RECAREAFEEDESCRIPTION','RECAREAID','RECAREALATITUDE','RECAREALONGITUDE','RECAREANAME','RECAREAPHONE','RECAREARESERVATIONURL','STAYLIMIT']
     
     addTable(tableName,loadPath,dataPath,colNames,cursor,conn)
@@ -38,7 +38,7 @@ def main():
 
     tableName = 'Facilities'
     loadPath = 'Loading/Loading_TXT_to_SQL_Facilities.sql'
-    dataPath = 'Data/Facilities_API_v1_edited.csv'
+    dataPath = 'Data/Facilities_API_v1.csv'
     colNames = ['FACILITYADAACCESS','FACILITYEMAIL','FACILITYID','FACILITYLATITUDE','FACILITYLONGITUDE','FACILITYMAPURL','FACILITYNAME','FACILITYPHONE','FACILITYRESERVATIONURL','FACILITYTYPEDESCRIPTION','FACILITYUSEFEEDESCRIPTION','KEYWORDS','LASTUPDATEDDATE','LEGACYFACILITYID','ORGFACILITYID','STAYLIMIT']
     
     addTable(tableName,loadPath,dataPath,colNames,cursor,conn)
@@ -101,12 +101,28 @@ def addTable(tableName,loadPath,dataPath,colNames,cursor,conn):
     
     # Open .csv and import row-by-row into the 
     
+#    with open(dataPath,'r') as fin:
+#        reader = csv.reader(fin)
+#        for row in reader:
+#            to_db =[]
+#            for cell in row:
+#                to_db.append(cell)
+#            cursor.execute(loadQry, to_db)
+            
+    #Modified approach to deals with undedited files        
     with open(dataPath,'r') as fin:
-        reader = csv.reader(fin)
+        reader = csv.DictReader(fin) #Pulls in CSV with headers as dict fieldnames
+        #names = reader.fieldnames #show field names for debug
         for row in reader:
             to_db =[]
-            for cell in row:
-                to_db.append(cell)
+#            print(names)   #More debugging
+#            print("Heres the test")
+#            print(row[names[1]])
+            for i in range(0,len(colNames)): #iterate through colNames supplied in colNames for each Table
+#                print("cell level testing")
+#                print (i)
+#                print((row[names[i]]))
+                to_db.append(row[colNames[i]]) #Only columns in row that have a name specified in colNames
             cursor.execute(loadQry, to_db)
 
     conn.commit()
