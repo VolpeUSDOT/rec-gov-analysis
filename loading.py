@@ -67,9 +67,71 @@ def main():
     dataPath = 'Data/Reservation/2014.csv'
     colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
     
-    addTable(tableName,loadPath,dataPath,colNames,cursor,conn)   
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
     
+    #Add 2013 reservations
+    tableName = 'Recreation_2013'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2013.sql'
+    dataPath = 'Data/Reservation/2013.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
     
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2012 reservations
+    tableName = 'Recreation_2012'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2012.sql'
+    dataPath = 'Data/Reservation/2012.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2011 reservations
+    tableName = 'Recreation_2011'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2011.sql'
+    dataPath = 'Data/Reservation/2011.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2010 reservations
+    tableName = 'Recreation_2010'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2010.sql'
+    dataPath = 'Data/Reservation/2010.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2009 reservations
+    tableName = 'Recreation_2009'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2009.sql'
+    dataPath = 'Data/Reservation/2009.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2008 reservations
+    tableName = 'Recreation_2008'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2008.sql'
+    dataPath = 'Data/Reservation/2008.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2007 reservations
+    tableName = 'Recreation_2007'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2007.sql'
+    dataPath = 'Data/Reservation/2007.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
+    
+    #Add 2006 reservations
+    tableName = 'Recreation_2006'
+    loadPath = 'Loading/Loading_TXT_to_SQL_2006.sql'
+    dataPath = 'Data/Reservation/2006.csv'
+    colNames = ["HistoricalReservationID","OrderNumber","Agency","OrgID","CodeHierarchy","RegionCode","RegionDescription","ParentLocationID","ParentLocation","LegacyFacilityID","Park","SiteType","UseType","ProductID","EntityType","EntityID","FacilityID","FacilityZIP","FacilityState","FacilityLongitude","FacilityLatitude","CustomerZIP","CustomerState","CustomerCountry","Tax","UseFee","TranFee","AttrFee","TotalBeforeTax","TotalPaid","StartDate","EndDate","OrderDate","NumberOfPeople","Tent","Popup","Trailer","RVMotorhome","Boat","HorseTrailer","Car","FifthWheel","Van","CanoeKayak","BoatTrailer","Motorcycle","Truck","Bus","Bicycle","Snowmobile","OffRoadlAllTerrainVehicle","PowerBoat","PickupCamper","LargeTentOver9x12","SmallTent","Marinaboat"]
+    
+    addTable(tableName,loadPath,dataPath,colNames,cursor,conn) 
     # Close connection
     cursor.close()
     conn.close()
