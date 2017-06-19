@@ -49,6 +49,7 @@ for recarea in AgencyIDs:
     
     RecArea_query='''
     select *
+    from RecAreaFacilities
     where RECAREAID = ___RECIDS___
     '''
     temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))

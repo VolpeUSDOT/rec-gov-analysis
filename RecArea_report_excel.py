@@ -11,8 +11,8 @@ import os, csv#, pyodbc
 import xlwt, xlrd
 import sqlite3
 import pandas as pd
-import requests
-import json
+import numpy as np
+
 
 sqlite_file="reservations.db"
 
@@ -104,6 +104,12 @@ for recarea in RecAreas:
     target_fac = target_fac.reset_index()
     
     #Run Analysis on collected facility data for RecArea
+    #Convert EndDate, StateDate and OrderDate to datetime format
+    target_fac['EndDate'] = pd.to_datetime(target_fac['EndDate'])
+    target_fac['StartDate'] = pd.to_datetime(target_fac['StartDate'])
+    target_fac['OrderDate'] = pd.to_datetime(target_fac['OrderDate'])
+    
+    target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),None)
     
     #Start with pandas based sheets as those are easier to implement
    
@@ -139,6 +145,10 @@ for recarea in RecAreas:
     
     
     RecArea_target = RecArea_all.loc[RecArea_all['RECAREAID']==int(recarea)]
+    
+    #Calculate Stay time
+    
+    
     
     
     
