@@ -108,10 +108,14 @@ for recarea in RecAreas:
     target_fac['EndDate'] = pd.to_datetime(target_fac['EndDate'])
     target_fac['StartDate'] = pd.to_datetime(target_fac['StartDate'])
     target_fac['OrderDate'] = pd.to_datetime(target_fac['OrderDate'])
-    
+    #Calculate Time of Stay (if applicable)
     target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),None)
+    #Get average stay time
+    Average_Stay = round(target_fac['stay_length'].mean(),2)
     
-    #Start with pandas based sheets as those are easier to implement
+    #Get Average Lead Time
+    target_fac['lead_time']= np.where(target_fac['StartDate'].notnull(),(target_fac['StartDate']-target_fac['OrderDate']) / np.timedelta64(1, 'D'),None)
+    Average_Lead = round(target_fac['lead_time'].mean(),2)
    
     #Set up workbook
     new_file = os.path.join(new_folder, recarea + '.xls')
@@ -146,8 +150,7 @@ for recarea in RecAreas:
     
     RecArea_target = RecArea_all.loc[RecArea_all['RECAREAID']==int(recarea)]
     
-    #Calculate Stay time
-    
+  
     
     
     
@@ -166,8 +169,10 @@ for recarea in RecAreas:
     #Create placeholders for items that will be filled out later
     rec_basic.write(4,0,'Number Campsites')
     rec_basic.write(4,1,campsite_count)
-    rec_basic.write(5,0,'Average Stay')
-    rec_basic.write(6,0,'Average Lead')
+    rec_basic.write(5,0,'Average Stay (days)')
+    rec_basic.write(5,1, Average_Stay)
+    rec_basic.write(6,0,'Average Lead (days)')
+    rec_basic.write(6,1,Average_Lead)
 #    
 #    test = RecArea_target['RECAREAID'].iloc[0]
 #    
