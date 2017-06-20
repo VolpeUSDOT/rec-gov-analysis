@@ -31,7 +31,7 @@ campsite_count = None
 
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['25'] #['10',17','25','122'] 
+RecAreas = ['25','122'] #['10',17','25','122'] 
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
@@ -55,19 +55,19 @@ if not os.path.exists(new_folder):
     os.makedirs(new_folder)
     
 #loop through years. "Enumerate" also provides access to index
-for index, years in enumerate(YEARS):
-    print("Running Analysis for " + str(years))
+for recarea in RecAreas:
+    
     
     #loop through RecAreas if more than one
-    for recarea in RecAreas:    
-        
+    for index, years in enumerate(YEARS):    
+        print("Running Analysis for " + recarea + " in " + str(years))
         # These tasks (done using PANDAS) are setup to run at the recArea level
         #get facility IDs in rec area using Data/RecAreaFacilities_API_v1.csv
         
         print (datetime.datetime.now().time())
         
         #Check if recarea facilities have already been loaded
-        if FACILITYID_filtered is None:
+        if (index == 0 ) :
             RecArea_query='''
             select *
             from RecAreaFacilities
