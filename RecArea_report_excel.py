@@ -40,13 +40,17 @@ YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 
 
 #No need to modify once YEARS is set
 YEAR_TABLE = []
+
+
+#Initialze DB connections
+recreation_cnxn = sqlite3.connect(sqlite_file)
+recreation_cursor = recreation_cnxn.cursor()
+
 for yr in YEARS:
     YEAR_TABLE.append("Recreation_"+str(yr))
 
 
-recreation_cnxn = sqlite3.connect(sqlite_file)
 
-recreation_cursor = recreation_cnxn.cursor()
 
 
 #crete folder for facilities
