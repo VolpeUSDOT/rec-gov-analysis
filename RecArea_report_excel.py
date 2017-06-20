@@ -26,7 +26,8 @@ RecAreas = ['25'] #['10',17','25','122']
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
-YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+#YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
 YEAR_TABLE = []
@@ -252,7 +253,7 @@ for index, years in enumerate(YEARS):
         target_fac['CustomerZIP_Str']=target_fac['CustomerZIP']
         target_fac['CustomerZIP_Str']=target_fac['CustomerZIP_Str'].apply(str)
         #form 3 digit regex expression. if handles if there is no Zip
-        print ("Zip Codes Local/NonLocal Analysis")
+        print ("Running Zip Codes Local/NonLocal Analysis")
         
         
         if fac_zip != '':
