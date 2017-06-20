@@ -6,12 +6,11 @@ Created on Wed Jun  7 09:31:55 2017
 """
 
 import datetime
-import time
-import os, csv#, pyodbc
-import xlwt, xlrd
 import sqlite3
 import pandas as pd
 import numpy as np
+import os
+import xlwt
 
 
 sqlite_file="reservations.db"
@@ -20,6 +19,16 @@ sqlite_file="reservations.db"
 FileDir = os.path.dirname(__file__)
 print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
+
+#Variable set up
+#==============================================================================
+# These variables will not change through the years. I initialize them as None
+# so that in years beyond the first year analyzed, these values do not have to be  calculated again
+#==============================================================================
+FACILITYID_filtered = None
+campsite_count = None
+
+
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
 RecAreas = ['25'] #['10',17','25','122'] 
@@ -57,42 +66,49 @@ for index, years in enumerate(YEARS):
         
         print (datetime.datetime.now().time())
         
-        RecArea_query='''
-        select *
-        from RecAreaFacilities
-        where RECAREAID = ___RECIDS___
-        '''
-        temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
-        
-        
-        
-        FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
-        
-        
-        FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
-        print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
-        
-        #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
-        FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
-        FACILITYID_list = FACILITYID_list.replace(']',')',1)
+        #Check if recarea facilities have already been loaded
+        if FACILITYID_filtered is None:
+            RecArea_query='''
+            select *
+            from RecAreaFacilities
+            where RECAREAID = ___RECIDS___
+            '''
+            temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
+            
+            
+            
+            FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
+            
+            
+            FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
+            print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
+            
+            #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
+            FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
+            FACILITYID_list = FACILITYID_list.replace(']',')',1)
+    else:
+        print("Faciltiies previously loaded")
         
         
         #Pull Campsites that are in the list of facilities
-        print("Gathering Campsite Info")
-        #Setup SQL query
-        campsite_query='''
-        select *
-        from Campsites
-        where FACILITYID IN ___FACIDS___
-        '''
-        temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
-        
-        #Run SQL query
-        Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
-        #Count sites
-        campsite_count = len(Campsites_RecArea)
-        
-        print(str(campsite_count)+" Campsites Loaded")
+        if campsite_count is None:
+            print("Gathering Campsite Info")
+            #Setup SQL query
+            campsite_query='''
+            select *
+            from Campsites
+            where FACILITYID IN ___FACIDS___
+            '''
+            temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
+            
+            #Run SQL query
+            Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
+            #Count sites
+            campsite_count = len(Campsites_RecArea)
+            
+            print(str(campsite_count)+" Campsites Loaded")
+        else: 
+            print("Campsites previously loaded")
         
         
         
@@ -105,11 +121,10 @@ for index, years in enumerate(YEARS):
         '''
         temp_fac_target_query = fac_target_query.replace("___RESYEAR___", YEAR_TABLE[index])
         temp_fac_target_query = temp_fac_target_query.replace("___FACIDS___", str(FACILITYID_list))
-        # @TODO: here is what a year condition/replacement can be added for when that has to be implemented
-        #Just replace year/table name in the query string before running
+    
         
         #Make SQL query
-        print('Gathering Facilities associated with RecArea')
+        print('Gathering Facility data associated with RecArea in '+str(years))
         target_fac = pd.read_sql_query(temp_fac_target_query, recreation_cnxn)
         target_fac = target_fac.reset_index()
         
