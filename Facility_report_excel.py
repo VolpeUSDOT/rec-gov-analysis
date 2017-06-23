@@ -18,7 +18,7 @@ FACILITYIDS = ['233262'] #['233396','233262','233266','233260','232250','232769'
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
-YEARS = [2015, 2014] #[2015, 2014, 2013, 2012, 2011, 2010]
+YEARS = [2015] #[2015, 2014, 2013, 2012, 2011, 2010]
 
 #No need to modify once YEARS is set
 YEAR_TABLE = []
