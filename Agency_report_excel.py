@@ -40,7 +40,7 @@ AgencyIDs = ['NPS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS'
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
 ##Note: Make sure the years your trying to have been loaded into the datbase in loading.py
 
-YEARS = [2015] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 #YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
@@ -193,7 +193,8 @@ for agency in AgencyIDs:
         Num_Facilities = len(target_fac['FacilityID'].value_counts())
         Num_RecAreas = len(target_fac['RECAREAID'].value_counts())
         Total_Res = len(target_fac)
-        
+        Org_ID = target_fac.iloc[1]['OrgID']
+        #print (Org_ID)
         ##Grab Campsites
     
         print("Gathering Campsite Info")
@@ -209,12 +210,13 @@ for agency in AgencyIDs:
         Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
         #Count sites
         campsite_count = len(Campsites_RecArea)
+        #grab orgID off top
         
         print(str(campsite_count)+" Campsites Loaded")
        #Basic Sheet for Rec Area
         basic_sheet = wb.add_sheet("Basic Info")
         basic_sheet.write(0,0,"OrgID")
-        basic_sheet.write(1,0,"Update Me")
+        basic_sheet.write(1,0,Org_ID)
         basic_sheet.write(0,1,"Agency Name")
         basic_sheet.write(1,1,agency)
         basic_sheet.write(0,2,"Number of RecAreas")
@@ -378,10 +380,34 @@ for agency in AgencyIDs:
             
             
         wb.save(new_file)
-
-    
+        
+    #Calculations for "Associated Rec Area" Sheet 
+    recAreas = target_fac['RECAREAID'].tolist()
     #Create "Associated Rec Area" Sheet    
-            
+    rec_sheet = wb.add_sheet("Associated RecAreas")
+    rec_sheet.write(0,0,"RecArea ID")
+    rec_sheet.write(0,1,"Number of Facilities")
+    rec_sheet.write(0,2,"Average Stay (Days)")
+    rec_sheet.write(0,3,"Average Lead (Days)")
+    rec_sheet.write(0,4,"Total Reservations "+ str(years))
+    
+    
+    for idx_rec,rec in enumerate(recAreas):
+        mean_lead_rec = target_fac.loc[target_fac['RECAREAID']==rec,'lead_time'].mean()
+        mean_stay_rec = target_fac.loc[target_fac['RECAREAID']==rec,'stay_length'].mean()
+        rec_reserv = len(target_fac.loc[target_fac['RECAREAID']==rec])
+        rec_fac = len(target_fac.loc[target_fac['RECAREAID']==rec].FacilityID.unique().tolist())
+        
+        rec_sheet.write(idx_rec+1,0,rec)
+        rec_sheet.write(idx_rec+1,1,rec_fac)
+        rec_sheet.write(idx_rec+1,2,mean_stay_rec)
+        rec_sheet.write(idx_rec+1,3,mean_lead_rec)
+        rec_sheet.write(idx_rec+1,4,rec_reserv)
+        
+        
+        
+    
+        
           
         
         wb.save(new_file)
