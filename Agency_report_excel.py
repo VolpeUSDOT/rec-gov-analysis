@@ -84,53 +84,7 @@ for agency in AgencyIDs:
              '''
         RecArea_Fac = pd.read_sql_query(RecArea_query,recreation_cnxn)
         
-#==============================================================================
-#         #Check if recarea facilities have already been loaded
-#         if (index == 0 ) :
-#             RecArea_query='''
-#             select *
-#             from RecAreaFacilities
-#             where RECAREAID = ___RECIDS___
-#             '''
-#             temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
-#             
-#             
-#             
-#             FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
-#             
-#             
-#             FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
-#             print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
-#             
-#             #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
-#             FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
-#             FACILITYID_list = FACILITYID_list.replace(']',')',1)
-#     else:
-#         print("Faciltiies previously loaded")
-#         
-#         
-#         #Pull Campsites that are in the list of facilities
-#         if campsite_count is None:
-#             print("Gathering Campsite Info")
-#             #Setup SQL query
-#             campsite_query='''
-#             select *
-#             from Campsites
-#             where FACILITYID IN ___FACIDS___
-#             '''
-#             temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
-#             
-#             #Run SQL query
-#             Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
-#             #Count sites
-#             campsite_count = len(Campsites_RecArea)
-#             
-#             print(str(campsite_count)+" Campsites Loaded")
-#         else: 
-#             print("Campsites previously loaded")
-#         
-#==============================================================================
-        
+
         #This pulls all reservation data belonging to and agency from the given years
         #reservation data
         
