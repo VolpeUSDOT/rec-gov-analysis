@@ -30,109 +30,144 @@ campsite_count = None
 
 
 
-# Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['25','122'] #['10',17','25','122'] 
+# Set Agency IDs that are present in the Reservation database
+##Note: There is a '' agency for some reservations. This appears to be related to Reserve America
+
+AgencyIDs = ['NPS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS','BOR']
+
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
-YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+##Note: Make sure the years your trying to have been loaded into the datbase in loading.py
+
+YEARS = [2015] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 #YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
 YEAR_TABLE = []
+
+#Initialize DB connections
+recreation_cnxn = sqlite3.connect(sqlite_file)
+recreation_cursor = recreation_cnxn.cursor()
+
+
+
 for yr in YEARS:
     YEAR_TABLE.append("Recreation_"+str(yr))
 
 
-recreation_cnxn = sqlite3.connect(sqlite_file)
-
-recreation_cursor = recreation_cnxn.cursor()
 
 
 #crete folder for facilities
-new_folder = os.path.join(OUTDIR, "RecAreas")
+new_folder = os.path.join(OUTDIR, "Agency")
 if not os.path.exists(new_folder):
     os.makedirs(new_folder)
     
 #loop through years. "Enumerate" also provides access to index
-for recarea in RecAreas:
+for agency in AgencyIDs:
     
     
     #loop through RecAreas if more than one
     for index, years in enumerate(YEARS):    
-        print("Running Analysis for " + recarea + " in " + str(years))
+        print("Running Analysis for " + agency + " in " + str(years))
         # These tasks (done using PANDAS) are setup to run at the recArea level
         #get facility IDs in rec area using Data/RecAreaFacilities_API_v1.csv
         
         print (datetime.datetime.now().time())
         
-        #Check if recarea facilities have already been loaded
-        if (index == 0 ) :
-            RecArea_query='''
-            select *
-            from RecAreaFacilities
-            where RECAREAID = ___RECIDS___
-            '''
-            temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
-            
-            
-            
-            FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
-            
-            
-            FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
-            print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
-            
-            #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
-            FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
-            FACILITYID_list = FACILITYID_list.replace(']',')',1)
-    else:
-        print("Faciltiies previously loaded")
         
+        #Pull in RecArea/Facility information
+        RecArea_query='''
+             select *
+             from RecAreaFacilities
+             
+             '''
+        RecArea_Fac = pd.read_sql_query(RecArea_query,recreation_cnxn)
         
-        #Pull Campsites that are in the list of facilities
-        if campsite_count is None:
-            print("Gathering Campsite Info")
-            #Setup SQL query
-            campsite_query='''
-            select *
-            from Campsites
-            where FACILITYID IN ___FACIDS___
-            '''
-            temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
-            
-            #Run SQL query
-            Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
-            #Count sites
-            campsite_count = len(Campsites_RecArea)
-            
-            print(str(campsite_count)+" Campsites Loaded")
-        else: 
-            print("Campsites previously loaded")
+#==============================================================================
+#         #Check if recarea facilities have already been loaded
+#         if (index == 0 ) :
+#             RecArea_query='''
+#             select *
+#             from RecAreaFacilities
+#             where RECAREAID = ___RECIDS___
+#             '''
+#             temp_RecArea_query = RecArea_query.replace("___RECIDS___", str(recarea))
+#             
+#             
+#             
+#             FACILITYID_filtered = pd.read_sql_query(temp_RecArea_query,recreation_cnxn)
+#             
+#             
+#             FACILITYID_list=FACILITYID_filtered['FACILITYID'].tolist()
+#             print (str(len(FACILITYID_filtered)) + " facilities for RecArea " + recarea + " loaded")
+#             
+#             #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
+#             FACILITYID_list = str(FACILITYID_list).replace('[','(',1)
+#             FACILITYID_list = FACILITYID_list.replace(']',')',1)
+#     else:
+#         print("Faciltiies previously loaded")
+#         
+#         
+#         #Pull Campsites that are in the list of facilities
+#         if campsite_count is None:
+#             print("Gathering Campsite Info")
+#             #Setup SQL query
+#             campsite_query='''
+#             select *
+#             from Campsites
+#             where FACILITYID IN ___FACIDS___
+#             '''
+#             temp_campsite_query = campsite_query.replace("___FACIDS___", str(FACILITYID_list))
+#             
+#             #Run SQL query
+#             Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
+#             #Count sites
+#             campsite_count = len(Campsites_RecArea)
+#             
+#             print(str(campsite_count)+" Campsites Loaded")
+#         else: 
+#             print("Campsites previously loaded")
+#         
+#==============================================================================
         
-        
+        #This pulls all reservation data belonging to and agency from the given years
+        #reservation data
         
         #setup SQL query
         
-        fac_target_query = '''
-        select *
-        from ___RESYEAR___
-        where FacilityID IN ___FACIDS___
+        fac_target_query= '''
+        SELECT  ___RESYEAR___.CustomerZIP,  ___RESYEAR___.FacilityID , RecAreaFacilities.FACILITYID,RecAreaFacilities.RECAREAID,
+         ___RESYEAR___.EndDate,___RESYEAR___.StartDate,___RESYEAR___.OrderDate,___RESYEAR___.CustomerCountry,___RESYEAR___.CustomerState,___RESYEAR___.FacilityState,
+         ___RESYEAR___.FacilityZIP,___RESYEAR___.EntityType
+        FROM  ___RESYEAR___ LEFT JOIN RecAreaFacilities
+        ON ___RESYEAR___.FacilityID = RecAreaFacilities.FACILITYID
+        WHERE AGENCY = ___AGIDS___;
         '''
+        
+#        fac_target_query = '''
+#        select *
+#        from ___RESYEAR___
+#        where AGENCY = ___AGIDS___
+#        '''
+        
         temp_fac_target_query = fac_target_query.replace("___RESYEAR___", YEAR_TABLE[index])
-        temp_fac_target_query = temp_fac_target_query.replace("___FACIDS___", str(FACILITYID_list))
+        temp_fac_target_query = temp_fac_target_query.replace("___AGIDS___", "'"+agency+"'")
     
         
         #Make SQL query
-        print('Gathering Facility data associated with RecArea in '+str(years))
+        print('Gathering '+agency+' Reservation Date for '+str(years))
         target_fac = pd.read_sql_query(temp_fac_target_query, recreation_cnxn)
         target_fac = target_fac.reset_index()
+        
+      
         
         #Run Analysis on collected facility data for RecArea
         #Convert EndDate, StateDate and OrderDate to datetime format
         target_fac['EndDate'] = pd.to_datetime(target_fac['EndDate'])
         target_fac['StartDate'] = pd.to_datetime(target_fac['StartDate'])
         target_fac['OrderDate'] = pd.to_datetime(target_fac['OrderDate'])
+        
         #Calculate Time of Stay (if applicable)
         target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),None)
         #Get average stay time
@@ -141,68 +176,17 @@ for recarea in RecAreas:
         #Get Average Lead Time
         target_fac['lead_time']= np.where(target_fac['StartDate'].notnull(),(target_fac['StartDate']-target_fac['OrderDate']) / np.timedelta64(1, 'D'),None)
         Average_Lead = round(target_fac['lead_time'].mean(),2)
+        
+        #Get unique facility IDS for each service
+        facilities = target_fac.FacilityID.unique().tolist()
+        
        
         #Set up workbook
-        new_file = os.path.join(new_folder, "RecArea"+ recarea + "_"+ str(years)+ '.xls')
+        new_file = os.path.join(new_folder, "Agency"+ agency + "_"+ str(years)+ '.xls')
         wb = xlwt.Workbook()
-        
-        
-        
-        
-         #Create RecArea basic sheet
-       #RECAREANAME, RECAREAID, RECAREALATITUDE,RECAREALONGITUDE
-       #Calculate Total number of campsites, average stay, average lead, Reservations 2015
-       
-       #@TODO look into lat/long for all sites
-       
-       
-        print('Gathering RecArea Basic Information')
-        
-        #Setup SQL query
-        
-        RecArea_basic_query = '''
-        select *
-        from RecAreas
-        where RECAREAID =  ___RECIDS___
-        '''
-        
-        temp_RecArea_basic_query=RecArea_basic_query.replace("___RECIDS___", str(recarea))
-        
-        #Run SQL query
-        RecArea_all = pd.read_sql_query(temp_RecArea_basic_query,recreation_cnxn)
-        
-        
-        
-        RecArea_target = RecArea_all.loc[RecArea_all['RECAREAID']==int(recarea)]
-        
-      
-        
-        
-        
-        
-        rec_basic = wb.add_sheet('RecArea_Basic')
     
-        rec_basic.write(0,0,'RecAreaID')
-        rec_basic.write(0,1,str(RecArea_target['RECAREAID'].iloc[0]))
-        rec_basic.write(1,0,'RecAreaName')
-        rec_basic.write(1,1,RecArea_target['RECAREANAME'].iloc[0])
-        rec_basic.write(2,0,'RecAreaLatitude')
-        rec_basic.write(2,1,RecArea_target['RECAREALATITUDE'].iloc[0])
-        rec_basic.write(3,0,'RecAreaLongitude')
-        rec_basic.write(3,1,RecArea_target['RECAREALONGITUDE'].iloc[0])
-        
-        #Create placeholders for items that will be filled out later
-        rec_basic.write(4,0,'Number Campsites')
-        rec_basic.write(4,1,campsite_count)
-        rec_basic.write(5,0,'Average Stay (days)')
-        rec_basic.write(5,1, Average_Stay)
-        rec_basic.write(6,0,'Average Lead (days)')
-        rec_basic.write(6,1,Average_Lead)
-    #    
-    #    test = RecArea_target['RECAREAID'].iloc[0]
-    #    
-        wb.save(new_file)
-        
+       
+
          
         
         #Item 1: In-state/out-of-state/intl distinction
