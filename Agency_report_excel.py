@@ -139,7 +139,7 @@ for agency in AgencyIDs:
         fac_target_query= '''
         SELECT  ___RESYEAR___.CustomerZIP,  ___RESYEAR___.FacilityID , RecAreaFacilities.FACILITYID,RecAreaFacilities.RECAREAID,
          ___RESYEAR___.EndDate,___RESYEAR___.StartDate,___RESYEAR___.OrderDate,___RESYEAR___.CustomerCountry,___RESYEAR___.CustomerState,___RESYEAR___.FacilityState,
-         ___RESYEAR___.FacilityZIP,___RESYEAR___.EntityType
+         ___RESYEAR___.FacilityZIP,___RESYEAR___.EntityType,___RESYEAR___.OrgID
         FROM  ___RESYEAR___ LEFT JOIN RecAreaFacilities
         ON ___RESYEAR___.FacilityID = RecAreaFacilities.FACILITYID
         WHERE AGENCY = ___AGIDS___;
@@ -156,7 +156,7 @@ for agency in AgencyIDs:
     
         
         #Make SQL query
-        print('Gathering '+agency+' Reservation Date for '+str(years))
+        print('Gathering '+agency+' Reservation Data for '+str(years))
         target_fac = pd.read_sql_query(temp_fac_target_query, recreation_cnxn)
         target_fac = target_fac.reset_index()
         
@@ -180,12 +180,57 @@ for agency in AgencyIDs:
         #Get unique facility IDS for each service
         facilities = target_fac.FacilityID.unique().tolist()
         
+        #Format FACILITYID_lsit for use in SQL in statement by replacing [] with ()
+        facilities = str(facilities).replace('[','(',1)
+        facilities = facilities.replace(']',')',1)
+        
        
         #Set up workbook
         new_file = os.path.join(new_folder, "Agency"+ agency + "_"+ str(years)+ '.xls')
         wb = xlwt.Workbook()
+        
+       #Calculcations for Basic Sheet
+        Num_Facilities = len(target_fac['FacilityID'].value_counts())
+        Num_RecAreas = len(target_fac['RECAREAID'].value_counts())
+        Total_Res = len(target_fac)
+        
+        ##Grab Campsites
     
+        print("Gathering Campsite Info")
+        #Setup SQL query
+        campsite_query='''
+        select *
+        from Campsites
+        where FACILITYID IN ___FACIDS___
+        '''
+        temp_campsite_query = campsite_query.replace("___FACIDS___", str(facilities))
+        
+        #Run SQL query
+        Campsites_RecArea=pd.read_sql_query(temp_campsite_query,recreation_cnxn)
+        #Count sites
+        campsite_count = len(Campsites_RecArea)
+        
+        print(str(campsite_count)+" Campsites Loaded")
+       #Basic Sheet for Rec Area
+        basic_sheet = wb.add_sheet("Basic Info")
+        basic_sheet.write(0,0,"OrgID")
+        basic_sheet.write(1,0,"Update Me")
+        basic_sheet.write(0,1,"Agency Name")
+        basic_sheet.write(1,1,agency)
+        basic_sheet.write(0,2,"Number of RecAreas")
+        basic_sheet.write(1,2,Num_RecAreas)
+        basic_sheet.write(0,3,"Number of Facilities")
+        basic_sheet.write(1,3,Num_Facilities)
+        basic_sheet.write(0,4,"Number of Campsites")
+        basic_sheet.write(1,4,campsite_count)
+        basic_sheet.write(0,5,"Average Stay")
+        basic_sheet.write(1,5,Average_Stay)
+        basic_sheet.write(0,6,"Average Lead Time")
+        basic_sheet.write(1,6, Average_Lead)
+        basic_sheet.write(0,7,"Total Reservations "+ str(years))
+        basic_sheet.write(1,7,Total_Res)
        
+        
 
          
         
@@ -334,11 +379,12 @@ for agency in AgencyIDs:
             
         wb.save(new_file)
 
-        
+    
+    #Create "Associated Rec Area" Sheet    
             
           
         
-   
+        wb.save(new_file)
  
 #Close db  connections
 recreation_cursor.close()
