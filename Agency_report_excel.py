@@ -33,7 +33,7 @@ campsite_count = None
 # Set Agency IDs that are present in the Reservation database
 ##Note: There is a '' agency for some reservations. This appears to be related to Reserve America
 
-AgencyIDs = ['NPS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS','BOR']
+AgencyIDs = ['USFS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS','BOR']
 
 
 #Adjust YEARS list for each year you want analysis for
