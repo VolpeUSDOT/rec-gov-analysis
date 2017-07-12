@@ -335,36 +335,36 @@ for agency in AgencyIDs:
             
         wb.save(new_file)
         
-    #Calculations for "Associated Rec Area" Sheet 
-    recAreas = target_fac['RECAREAID'].tolist()
-    #Create "Associated Rec Area" Sheet    
-    rec_sheet = wb.add_sheet("Associated RecAreas")
-    rec_sheet.write(0,0,"RecArea ID")
-    rec_sheet.write(0,1,"Number of Facilities")
-    rec_sheet.write(0,2,"Average Stay (Days)")
-    rec_sheet.write(0,3,"Average Lead (Days)")
-    rec_sheet.write(0,4,"Total Reservations "+ str(years))
-    
-    
-    for idx_rec,rec in enumerate(recAreas):
-        mean_lead_rec = target_fac.loc[target_fac['RECAREAID']==rec,'lead_time'].mean()
-        mean_stay_rec = target_fac.loc[target_fac['RECAREAID']==rec,'stay_length'].mean()
-        rec_reserv = len(target_fac.loc[target_fac['RECAREAID']==rec])
-        rec_fac = len(target_fac.loc[target_fac['RECAREAID']==rec].FacilityID.unique().tolist())
-        
-        rec_sheet.write(idx_rec+1,0,rec)
-        rec_sheet.write(idx_rec+1,1,rec_fac)
-        rec_sheet.write(idx_rec+1,2,mean_stay_rec)
-        rec_sheet.write(idx_rec+1,3,mean_lead_rec)
-        rec_sheet.write(idx_rec+1,4,rec_reserv)
-        
-        
-        
-    
-        
-          
-        
+        #Calculations for "Associated Rec Area" Sheet
+        print ("Finding associated RecAreas")
+        #filter out only unique RecAreas
+        recAreas = np.unique(target_fac['RECAREAID'].tolist())
+        #filter out NaNs
+        recAreas = recAreas[~np.isnan(recAreas)]
+        #Create "Associated Rec Area" Sheet    
+        rec_sheet = wb.add_sheet("Associated RecAreas")
+        rec_sheet.write(0,0,"RecArea ID")
+        rec_sheet.write(0,1,"Number of Facilities")
+        rec_sheet.write(0,2,"Average Stay (Days)")
+        rec_sheet.write(0,3,"Average Lead (Days)")
+        rec_sheet.write(0,4,"Total Reservations "+ str(years))
+        #Debug Statement
+        #print("RecArea sheet formatted")
         wb.save(new_file)
+        
+        for idx_rec,rec in enumerate(recAreas):
+            mean_lead_rec = target_fac.loc[target_fac['RECAREAID']==rec,'lead_time'].mean()
+            mean_stay_rec = target_fac.loc[target_fac['RECAREAID']==rec,'stay_length'].mean()
+            rec_reserv = len(target_fac.loc[target_fac['RECAREAID']==rec])
+            rec_fac = len(target_fac.loc[target_fac['RECAREAID']==rec].FacilityID.unique().tolist())
+            #Debug Statment
+            #print("metrics for "+ str(rec))
+            rec_sheet.write(idx_rec+1,0,rec)
+            rec_sheet.write(idx_rec+1,1,rec_fac)
+            rec_sheet.write(idx_rec+1,2,mean_stay_rec)
+            rec_sheet.write(idx_rec+1,3,mean_lead_rec)
+            rec_sheet.write(idx_rec+1,4,rec_reserv)
+            wb.save(new_file)
  
 #Close db  connections
 recreation_cursor.close()
