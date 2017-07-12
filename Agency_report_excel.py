@@ -40,7 +40,7 @@ AgencyIDs = ['USFS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
 ##Note: Make sure the years your trying to have been loaded into the datbase in loading.py
 
-YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+YEARS = [2015,2015] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 #YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
@@ -123,12 +123,15 @@ for agency in AgencyIDs:
         target_fac['OrderDate'] = pd.to_datetime(target_fac['OrderDate'])
         
         #Calculate Time of Stay (if applicable)
-        target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),None)
+        target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),np.NaN)
+        #debug
+        STAY_clm = target_fac['stay_length']
+        
         #Get average stay time
         Average_Stay = round(target_fac['stay_length'].mean(),2)
         
         #Get Average Lead Time
-        target_fac['lead_time']= np.where(target_fac['StartDate'].notnull(),(target_fac['StartDate']-target_fac['OrderDate']) / np.timedelta64(1, 'D'),None)
+        target_fac['lead_time']= np.where(target_fac['StartDate'].notnull(),(target_fac['StartDate']-target_fac['OrderDate']) / np.timedelta64(1, 'D'),np.NaN)
         Average_Lead = round(target_fac['lead_time'].mean(),2)
         
         #Get unique facility IDS for each service
@@ -352,9 +355,19 @@ for agency in AgencyIDs:
         #print("RecArea sheet formatted")
         wb.save(new_file)
         
+        #STAY_clm = target_fac['stay_length']
+        
         for idx_rec,rec in enumerate(recAreas):
-            mean_lead_rec = target_fac.loc[target_fac['RECAREAID']==rec,'lead_time'].mean()
-            mean_stay_rec = target_fac.loc[target_fac['RECAREAID']==rec,'stay_length'].mean()
+            #sample = target_fac.loc[target_fac['RECAREAID']==rec,'stay_length']
+            #sample2 = target_fac.loc[target_fac['RECAREAID']==rec,'lead_time']
+            
+            mean_lead_rec = np.nanmean(target_fac.loc[target_fac['RECAREAID']==rec,'lead_time'])
+            mean_stay_rec = np.nanmean(target_fac.loc[target_fac['RECAREAID']==rec,'stay_length'])
+            #Check if mean stay is nan. Some rec areas may not have "Stays"
+            if np.isnan(mean_stay_rec):
+                mean_stay_rec = 'N/A' # Change to N/a for prionting in document
+        
+            
             rec_reserv = len(target_fac.loc[target_fac['RECAREAID']==rec])
             rec_fac = len(target_fac.loc[target_fac['RECAREAID']==rec].FacilityID.unique().tolist())
             #Debug Statment
