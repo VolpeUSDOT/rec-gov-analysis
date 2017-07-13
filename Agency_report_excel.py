@@ -124,8 +124,6 @@ for agency in AgencyIDs:
         
         #Calculate Time of Stay (if applicable)
         target_fac['stay_length']= np.where(target_fac['EndDate'].notnull(),(target_fac['EndDate']-target_fac['StartDate']) / np.timedelta64(1, 'D'),np.NaN)
-        #debug
-        STAY_clm = target_fac['stay_length']
         
         #Get average stay time
         Average_Stay = round(target_fac['stay_length'].mean(),2)
