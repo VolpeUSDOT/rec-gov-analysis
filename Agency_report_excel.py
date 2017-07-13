@@ -40,7 +40,7 @@ AgencyIDs = ['USFS'] #['NPS', 'USFS','USACE','Reserve America','NARA','BLM','FWS
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
 ##Note: Make sure the years your trying to have been loaded into the datbase in loading.py
 
-YEARS = [2015,2015] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+YEARS = [2015,2014] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 #YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
