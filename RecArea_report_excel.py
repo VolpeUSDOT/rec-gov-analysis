@@ -31,11 +31,11 @@ campsite_count = None
 
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['25','122'] #['10',17','25','122'] 
+RecAreas = ['1061'] #['10',17','25','122'] 
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
-YEARS = [2015] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
+YEARS = [2011] #All years [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 #YEARS = [2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006]
 
 #No need to modify once YEARS is set
@@ -202,7 +202,11 @@ for recarea in RecAreas:
         rec_basic.write(5,1, Average_Stay)
         rec_basic.write(6,0,'Average Lead (days)')
         rec_basic.write(6,1,Average_Lead)
-    #    
+        
+    #    #Total site reservations calcualtion
+        total_res=len(target_fac)
+        rec_basic.write(7,0,'Total Reservations')
+        rec_basic.write(7,1,total_res)
     #    test = RecArea_target['RECAREAID'].iloc[0]
     #    
         wb.save(new_file)
@@ -226,8 +230,8 @@ for recarea in RecAreas:
        
         #In State/Out of State/Out of Country distinction
         
-        #Total site reservaations calcualtion
-        total_res=len(target_fac)
+        #Total site reservaations calcualtion (done previously)
+        #total_res=len(target_fac)
         
         #Collect reservations made by residents of the faciliity's state
         instate_res=len(target_fac.loc[target_fac['CustomerState']==target_fac['FacilityState']])
