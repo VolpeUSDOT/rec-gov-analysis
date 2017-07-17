@@ -207,8 +207,13 @@ for recarea in RecAreas:
         total_res=len(target_fac)
         rec_basic.write(7,0,'Total Reservations')
         rec_basic.write(7,1,total_res)
-    #    test = RecArea_target['RECAREAID'].iloc[0]
-    #    
+        #Total # of reserved visitors
+        target_fac.NumberOfPeople = target_fac.NumberOfPeople.astype(float)
+        total_res_visitors = target_fac['NumberOfPeople'].sum()
+        
+        rec_basic.write(8,0,'Total Reserved Visitors')
+        rec_basic.write(8,1,total_res_visitors)
+     
         wb.save(new_file)
         
          
