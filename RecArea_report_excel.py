@@ -322,10 +322,7 @@ for recarea in RecAreas:
             ent_sheet.write(int(index)+1,0,row['index'])
             ent_sheet.write(int(index)+1,1,row['EntityType'])
             #count Number of people per EntityType
-            print('Test')
-            print (row['index'])
             ReservedVisitors = target_fac.loc[target_fac['EntityType']==row['index']].NumberOfPeople.sum()
-            #print (ReservedVisitors)
             ent_sheet.write(int(index)+1,2,ReservedVisitors)
         wb.save(new_file)
         
