@@ -305,6 +305,9 @@ for recarea in RecAreas:
         #Item 1 - Add entity type to standard report
         #get entity counts as a data frame to iterate over
         entity_count = target_fac['EntityType'].value_counts().to_frame().reset_index()
+        #add sum of Number of people per entity type placeholder
+        entity_count['NumPeople'] = np.NaN
+        
         #print (len(entity_count))
         #write to new sheet
         
@@ -314,9 +317,16 @@ for recarea in RecAreas:
         ent_sheet = wb.add_sheet("EntityType")
         ent_sheet.write(0,0,'Entity Type')
         ent_sheet.write(0,1,'# of Reservations')
+        ent_sheet.write(0,2,'Reserved Visitors')
         for index, row in entity_count.iterrows():
             ent_sheet.write(int(index)+1,0,row['index'])
             ent_sheet.write(int(index)+1,1,row['EntityType'])
+            #count Number of people per EntityType
+            print('Test')
+            print (row['index'])
+            ReservedVisitors = target_fac.loc[target_fac['EntityType']==row['index']].NumberOfPeople.sum()
+            #print (ReservedVisitors)
+            ent_sheet.write(int(index)+1,2,ReservedVisitors)
         wb.save(new_file)
         
         # Dates
