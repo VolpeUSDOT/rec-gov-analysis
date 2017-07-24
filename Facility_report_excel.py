@@ -106,6 +106,7 @@ for run_years in YEARS:
         fac_basic.write(0,6,'Number Campsites')
         fac_basic.write(0,7,'Average Stay')
         fac_basic.write(0,8,'Average Lead')
+        fac_basic.write(0,10,'Reserved Visitors')
                 
         col_res = 9
         
@@ -362,6 +363,7 @@ for run_years in YEARS:
             
             i = i + 1
             
+        
         wb.save(new_file)
        
         #Todo List items using pandas
@@ -425,7 +427,11 @@ for run_years in YEARS:
         custloc_sheet.write(5,5,total_res)
         
         
-        
+        #Calculate number of reserved persons based on NumberOfPeople attribute
+         #Total # of reserved visitors
+        target_fac.NumberOfPeople = target_fac.NumberOfPeople.astype(float)
+        total_res_visitors = target_fac['NumberOfPeople'].sum()
+        fac_basic.write(1,10,total_res_visitors)
         
         
         
