@@ -93,7 +93,7 @@ for agency in AgencyIDs:
         fac_target_query= '''
         SELECT  ___RESYEAR___.CustomerZIP,  ___RESYEAR___.FacilityID , RecAreaFacilities.FACILITYID,RecAreaFacilities.RECAREAID,
          ___RESYEAR___.EndDate,___RESYEAR___.StartDate,___RESYEAR___.OrderDate,___RESYEAR___.CustomerCountry,___RESYEAR___.CustomerState,___RESYEAR___.FacilityState,
-         ___RESYEAR___.FacilityZIP,___RESYEAR___.EntityType,___RESYEAR___.OrgID
+         ___RESYEAR___.FacilityZIP,___RESYEAR___.EntityType,___RESYEAR___.OrgID,___RESYEAR___.NumberOfPeople
         FROM  ___RESYEAR___ LEFT JOIN RecAreaFacilities
         ON ___RESYEAR___.FacilityID = RecAreaFacilities.FACILITYID
         WHERE AGENCY = ___AGIDS___;
@@ -186,8 +186,13 @@ for agency in AgencyIDs:
         basic_sheet.write(1,6, Average_Lead)
         basic_sheet.write(0,7,"Total Reservations "+ str(years))
         basic_sheet.write(1,7,Total_Res)
+        basic_sheet.write(0,8,"Reserved Visitors")
        
-        
+        #Calculate number of reserved persons based on NumberOfPeople attribute
+         #Total # of reserved visitors
+        target_fac.NumberOfPeople = target_fac.NumberOfPeople.astype(float)
+        total_res_visitors = target_fac['NumberOfPeople'].sum()
+        basic_sheet.write(1,8,total_res_visitors)
 
          
         
