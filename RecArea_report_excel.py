@@ -369,6 +369,28 @@ for recarea in RecAreas:
             
             
         wb.save(new_file)
+        
+        #Create sheet of related facilities
+        print("Creating Facility List")
+        
+        fac_sheet = wb.add_sheet("FacilityList")
+        fac_sheet.write(0,0,'FacilityName')
+        fac_sheet.write(0,1,'# of Reservations')
+        
+        
+        #count reservations based on facility ID
+        FacList_count = target_fac['FacilityID'].value_counts().to_frame().reset_index()
+        FacList_count = FacList_count.rename(columns={'index':'facid'})
+        FacGrouper = target_fac.groupby('FacilityID')
+        for index,row in FacList_count.iterrows():
+            fac_sheet.write(int(index)+1,0,row['facid'])
+            fac_sheet.write(int(index)+1,1,row['FacilityID'])
+        
+        
+        
+        
+        
+        wb.save(new_file)
 
         
             
