@@ -463,7 +463,21 @@ for run_years in YEARS:
     
         else:
             print('No Facility Zip Code Available in Data Set')
-        
+            
+            
+        # Add top 5 zip codes    
+        #zip_count = target_fac['CustomerZIP_Str'].value_counts().to_frame()
+        zip_digit = target_fac['CustomerZIP_Str'].str[0:3]
+        zip_count = zip_digit.value_counts().to_frame().reset_index()
+        zip_top5 = zip_count.head(5)
+        zip_top5 = zip_top5.rename(columns = {'index':'ZIP'})
+        custloc_sheet.write (0,11,"Top 5 Zip Codes by Reservation")
+       
+        for index,row in zip_top5.iterrows():
+           
+            custloc_sheet.write(index+1,11,row['ZIP']+"XX")
+            custloc_sheet.write(index+1,12,row['CustomerZIP_Str'])
+        wb.save(new_file)
         #############################################################
         #Item 1 - Add entity type to standard report
         #get entity counts as a data frame to iterate over
