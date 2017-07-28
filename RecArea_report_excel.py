@@ -376,16 +376,20 @@ for recarea in RecAreas:
         fac_sheet = wb.add_sheet("FacilityList")
         fac_sheet.write(0,0,'FacilityName')
         fac_sheet.write(0,1,'# of Reservations')
+        fac_sheet.write(0,2,'# of Reserved People')
         
         
         #count reservations based on facility ID
         FacList_count = target_fac['FacilityID'].value_counts().to_frame().reset_index()
+        
         FacList_count = FacList_count.rename(columns={'index':'facid'})
         FacGrouper = target_fac.groupby('FacilityID')
         for index,row in FacList_count.iterrows():
             fac_sheet.write(int(index)+1,0,row['facid'])
             fac_sheet.write(int(index)+1,1,row['FacilityID'])
-        
+            fac_res=target_fac.loc[target_fac['FacilityID']==row['facid']]['NumberOfPeople'].sum()
+            fac_sheet.write(int(index)+1,2,fac_res)
+            
         
         
         
