@@ -31,7 +31,7 @@ campsite_count = None
 
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['1061','1085'] #['10',17','25','122','1085']
+RecAreas = ['1035']#['1061','1085','1088','1064','1071','1074','1035']
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS

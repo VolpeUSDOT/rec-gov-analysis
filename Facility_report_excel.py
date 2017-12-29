@@ -13,7 +13,7 @@ print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
-FACILITYIDS = ['233283','233396'] #['233262'] 
+FACILITYIDS = ['233283','233396'] #['233262']
 
 
 #Adjust YEARS list for each year you want analysis for
