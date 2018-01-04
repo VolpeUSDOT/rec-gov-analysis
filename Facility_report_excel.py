@@ -13,13 +13,12 @@ print (FileDir)
 OUTDIR = os.path.join(FileDir, 'output')
 
 # Set IDs of objects for output
-FACILITYIDS = ['233283','233396'] #['233262'] 
+FACILITYIDS = ['231932','232103','231935'] #['233262']
 
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
-YEARS = [2015]
-#[2015, 2014, 2013, 2012, 2011, 2010]
+YEARS = [2015, 2014, 2013, 2012, 2011, 2010]
 
 #No need to modify once YEARS is set
 YEAR_TABLE = []
@@ -107,9 +106,9 @@ for run_years in YEARS:
         fac_basic.write(0,6,'Number Campsites')
         fac_basic.write(0,7,'Average Stay')
         fac_basic.write(0,8,'Average Lead')
-        fac_basic.write(0,10,'Reserved Visitors')
 
-        col_res = 9
+        # Number of reserved columns from above
+        col_res = 11
 
         for index, year in enumerate(YEARS):
             fac_basic.write(0, col_res, "Reservations " + str(year))
@@ -143,7 +142,7 @@ for run_years in YEARS:
         avg_stay = []
         avg_lead = []
 
-        col_res = 9
+        col_res = 11
 
         for year in YEARS:
             temp_time_query = time_query.replace("___YEAR___", str(year))
@@ -432,7 +431,8 @@ for run_years in YEARS:
          #Total # of reserved visitors
         target_fac.NumberOfPeople = target_fac.NumberOfPeople.astype(float)
         total_res_visitors = target_fac['NumberOfPeople'].sum()
-        fac_basic.write(1,10,total_res_visitors)
+        fac_basic.write(0,col_res,'Reserved Visitors')
+        fac_basic.write(1,col_res,total_res_visitors)
 
 
 
