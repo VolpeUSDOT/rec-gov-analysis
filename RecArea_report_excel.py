@@ -31,7 +31,7 @@ campsite_count = None
 
 
 # Set RecAreaIDs of objects for output. Thes come from RecAreaFacilities_API.csv
-RecAreas = ['1061','1085'] #['10',17','25','122','1085']
+RecAreas = ['1061','1085','1088','1064','1071','1074','1035']
 
 #Adjust YEARS list for each year you want analysis for
 #YEAR_TABLE will be automatically updated to have the Table names for the necessary sheets based on YEARS
@@ -49,8 +49,8 @@ recreation_cursor = recreation_cnxn.cursor()
 for yr in YEARS:
     YEAR_TABLE.append("Recreation_"+str(yr))
 
-
-
+# Query for selecting the date data needed to generate the yearly reservation analysis table
+date_query = '''select FacilityID, StartDate, EndDate from Recreation____YEAR___ where FacilityID in ('___FACID___')'''
 
 
 #crete folder for facilities
@@ -326,50 +326,6 @@ for recarea in RecAreas:
             ent_sheet.write(int(index)+1,2,ReservedVisitors)
         wb.save(new_file)
 
-        # Dates
-        #Create empty df from start to end date
-
-
-        # starting = "years-01-01"
-        #ending = "years-12-31"
-
-        #res_year = pd.DataFrame(0,columns=['Reservations'],index=pd.date_range('20150101','20151231',freq='D'))
-        res_year = pd.DataFrame(0,columns=['Reservations'],index=pd.date_range(str(years)+'0101',str(years)+'1231',freq='D'))
-
-
-
-        #@TODO right now this only handles order date, but could be made more robust?
-        res_dates= pd.DataFrame(target_fac.groupby('OrderDate').size().rename('Reservations'))
-        res_dates['dates'] = pd.to_datetime(res_dates.index)
-        res_dates_indexed = res_dates.set_index(['dates'],inplace=True)
-
-        #fill in res_dates with reservations made
-
-        for row in res_dates.iterrows():
-            if row[0] in res_year.index:
-                res_year.loc[row[0]]['Reservations']=row[1]
-
-
-        #print out to excel sheet
-
-        rec_dates = wb.add_sheet('Date Analysis')
-        rec_dates.write(0,0,'Date')
-        rec_dates.write(0,1,'# of Reservations')
-
-
-        i = 0
-        for row in res_year.iterrows():
-            date = row[0].strftime('%m-%d-%Y')
-            rec_dates.write(i+1,0,str(date))
-            rec_dates.write(i+1,1,int(res_year.loc[row[0]]['Reservations']))
-
-
-            #rec_dates.write(i+1,1,row[1]['Reservations'])
-            i=i+1
-
-
-        wb.save(new_file)
-
         #Create sheet of related facilities
         print("Creating Facility List")
 
@@ -383,7 +339,9 @@ for recarea in RecAreas:
         #count reservations based on facility ID
         FacList_count = target_fac['FacilityID'].value_counts().to_frame().reset_index()
 
+        # Rename field that actually holds FacilityID to facid. "FacilityID" field actually holds counts.
         FacList_count = FacList_count.rename(columns={'index':'facid'})
+
         FacGrouper = target_fac.groupby('FacilityID')
         for index,row in FacList_count.iterrows():
             fac_sheet.write(int(index)+1,0,row['facid'])
@@ -402,7 +360,133 @@ for recarea in RecAreas:
         wb.save(new_file)
 
 
+        # Dates
 
+        # Create list of facilities where reservations are being calculated.
+        FacArray = []
+        for index,row in FacList_count.iterrows():
+            FacArray.append(int(row['facid']))
+
+        FacArrayFormatted = ','.join(str(i) for i in FacArray)
+
+        #calendar dates
+        print ("reservations by date")
+        fac_agg = wb.add_sheet("Date Analysis")
+
+        fac_agg.write(0,0,"Date")
+        fac_agg.write(0,1,"Number Reservations")
+
+        temp_date_query = date_query.replace("'___FACID___'", FacArrayFormatted)
+
+        fac_date_counter = {}
+
+
+        starting = "2015-01-01"
+        ending = "2015-12-31"
+
+
+        start_year_as_int = int(starting[:4])
+        start_month_as_int = int(starting[5:-3])
+        start_day_as_int = int(starting[-2:])
+        end_year_as_int = int(ending[:4])
+        end_month_as_int = int(ending[5:-3])
+        end_day_as_int = int(ending[-2:])
+
+
+        start_date = datetime.datetime(start_year_as_int, start_month_as_int, start_day_as_int)
+        end_date = datetime.datetime(end_year_as_int, end_month_as_int, end_day_as_int)
+
+        total_days = (end_date - start_date).days + 1
+
+        for day_number in range(total_days):
+
+            current_date = (start_date + datetime.timedelta(days = day_number)).date()
+
+            day_m = str(current_date)[-5:]
+
+            if not day_m in fac_date_counter:
+                fac_date_counter[day_m] = 0
+            else:
+                fac_date_counter[day_m] += 1
+
+        for index,year in enumerate(YEARS):
+
+
+            temp_year_query = temp_date_query.replace("___YEAR___", str(year))
+
+            date = recreation_cursor.execute(temp_year_query)
+
+            date_counter = {}
+            for record in date:
+
+                start = record[1]
+                end = record[2]
+
+                if start != None and end != None and end != '' and start != '':
+
+                    start_year_as_int = int(start[:4])
+                    start_month_as_int = int(start[5:-3])
+                    start_day_as_int = int(start[-2:])
+                    end_year_as_int = int(end[:4])
+                    end_month_as_int = int(end[5:-3])
+                    end_day_as_int = int(end[-2:])
+
+                    start_date = datetime.datetime(start_year_as_int, start_month_as_int, start_day_as_int)
+                    end_date = datetime.datetime(end_year_as_int, end_month_as_int, end_day_as_int)
+
+                    total_days = (end_date - start_date).days + 1
+
+                    for day_number in range(total_days):
+
+                        current_date = (start_date + datetime.timedelta(days = day_number)).date()
+                        day_m = str(current_date)[-5:]
+
+                        # if not str(current_date) in date_counter:
+                            # date_counter[str(current_date)] = 1
+
+                        # else:
+                            # date_counter[str(current_date)] += 1
+
+                        if not day_m in fac_date_counter:
+                            fac_date_counter[day_m] = 1
+                        else:
+                            fac_date_counter[day_m] += 1
+
+                # Handles reservations with only a start-date. Typical for one-day events such as tours, but not typical for campgrounds.
+                elif start != None and start != '' and (end == None or end == ''):
+
+                    # Seperate out year, month, and day
+                    start_year_as_int = int(start[:4])
+                    start_month_as_int = int(start[5:-3])
+                    start_day_as_int = int(start[-2:])
+
+                    # Input into common time format
+                    start_date = datetime.datetime(start_year_as_int, start_month_as_int, start_day_as_int)
+
+                    # Convert date/time format to just date
+                    start_date = start_date.date()
+
+                    day_m = str(start_date)[-5:]
+
+                    if not day_m in fac_date_counter:
+                        fac_date_counter[day_m] = 1
+                    else:
+                        fac_date_counter[day_m] += 1
+
+                else:
+                    continue
+
+
+        i = 1
+
+        for k,v in fac_date_counter.items():
+            fac_agg.write(i, 0, k)
+            fac_agg.write(i, 1, v)
+
+            i = i + 1
+
+
+        wb.save(new_file)
 
 
 
