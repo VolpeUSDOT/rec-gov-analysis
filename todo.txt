@@ -1,3 +1,0 @@
-- Add facility type to standard report
-- In-state/out-of-state/intl distinction
-- Zip code local/non-local distinction
